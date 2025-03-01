@@ -1,0 +1,30 @@
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+import AccountScreen from "../screen/AccountScreen";
+import CreateScreen from "../screen/CreateScreen";
+import PostScreen from "../screen/PostScreen";
+import ListingDetailsScreen from "../screen/ListingDetailsScreen";
+
+const Stack = createNativeStackNavigator();
+
+const AccountNavigator = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Account"
+      component={AccountScreen}
+    />
+    <Stack.Screen
+      name="Create"
+      component={CreateScreen}
+    />
+    <Stack.Screen name="Posts" component={PostScreen} />
+    <Stack.Screen
+      name="ListingDetails"
+      component={ListingDetailsScreen}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+
+export default AccountNavigator;

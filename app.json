@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "react_native",
+    "name": "GameHub",
     "slug": "react_native",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./app/assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./app/assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,12 +17,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./app/assets/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.shaant.GameHub"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./app/assets/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c8eb823b-9f0f-404f-8de5-1c5421c403e3"
+      }
     }
   }
 }

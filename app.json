@@ -4,11 +4,11 @@
     "slug": "Gatherly",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app/assets/icon.png",
+    "icon": "./app/assets/new_icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./app/assets/splash-icon.png",
+      "image": "./app/assets/new_splash_icon.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "foregroundImage": "./app/assets/new_adaptive_icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.shaant.GameHub"

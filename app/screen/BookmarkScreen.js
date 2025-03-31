@@ -1,62 +1,67 @@
 import React, { useState } from "react";
-import { StyleSheet, FlatList, Alert, Text, View } from "react-native";
+import { StyleSheet, FlatList, Alert, View } from "react-native";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 
+import AppText from "../components/AppText";
 import Screen from "../components/Screen";
 import Card from "../components/Card";
 import colors from "../config/colors";
 import ActivityIndicator from "../components/ActivityIndicator";
-import AppText from "../components/AppText";
 
-const ListingScreen = ({ navigation }) => {
+const BookmarksScreen = ({ navigation }) => {
   const { user } = useAuth();
-  const [fetchData, setFetchData] = useState([]);
+  const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchPosts = async () => {
+  const fetchBookmarkedPosts = async () => {
     if (!user) return;
     setLoading(true);
 
     const { data, error } = await supabase
-      .from("posts")
+      .from("bookmarks")
       .select(
         `
-        *,
-        likes (
-          id,
-          user_id
-        ),
-        bookmarks (
-          id,
-          user_id
+        post_id,
+        posts (
+          *,
+          likes (
+            id,
+            user_id
+          ),
+          bookmarks (
+            id,
+            user_id
+          )
         )
       `
       )
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
     if (error) {
       Alert.alert("Error", error.message);
     } else {
-      const processedData = data.map((post) => ({
-        ...post,
-        isLiked: post.likes.some((like) => like.user_id === user.id),
-        likeCount: post.likes.length,
-        isBookmarked: post.bookmarks.some(
-          (bookmark) => bookmark.user_id === user.id
-        ),
-        bookmarkCount: post.bookmarks.length,
-      }));
-      setFetchData(processedData);
+      const processedData = data.map((bookmark) => {
+        const post = bookmark.posts;
+        return {
+          ...post,
+          isLiked: post.likes.some((like) => like.user_id === user.id),
+          likeCount: post.likes.length,
+          isBookmarked: true,
+          bookmarkCount: post.bookmarks.length,
+        };
+      });
+      setBookmarkedPosts(processedData);
     }
     setLoading(false);
   };
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchPosts();
+      fetchBookmarkedPosts();
     }, [user])
   );
 
@@ -64,13 +69,13 @@ const ListingScreen = ({ navigation }) => {
     <>
       <ActivityIndicator visible={loading} />
       <Screen style={styles.screen}>
-        {fetchData.length === 0 ? (
-          <View style={styles.textContainer}>
-            <AppText style={styles.text}>Nothing to show</AppText>
+        {bookmarkedPosts.length === 0 && !loading ? (
+          <View style={styles.emptyContainer}>
+            <AppText style={styles.emptyText}>No bookmarked posts yet</AppText>
           </View>
         ) : (
           <FlatList
-            data={fetchData}
+            data={bookmarkedPosts}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <Card
@@ -79,12 +84,12 @@ const ListingScreen = ({ navigation }) => {
                 imageUrl={item.image_url}
                 isLiked={item.isLiked}
                 likeCount={item.likeCount}
-                onLikedToggle={() => fetchPosts()}
                 isBookmarked={item.isBookmarked}
                 bookmarkCount={item.bookmarkCount}
-                onBookmarkToggle={() => fetchPosts()}
                 postId={item.id}
                 onPress={() => navigation.navigate("ListingDetails", item)}
+                onLikeToggle={fetchBookmarkedPosts}
+                onBookmarkToggle={fetchBookmarkedPosts}
               />
             )}
             showsVerticalScrollIndicator={false}
@@ -96,18 +101,19 @@ const ListingScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  text: {
-    color: colors.medium,
-  },
-  textContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   screen: {
     padding: 10,
     backgroundColor: colors.light,
   },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    color: colors.medium,
+    fontSize: 18,
+  },
 });
 
-export default ListingScreen;
+export default BookmarksScreen;

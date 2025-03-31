@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-
 import colors from "../config/colors";
 
 const ImageInput = ({ imageUri, onChangeImage, style, iconSize = 40 }) => {
@@ -36,6 +35,7 @@ const ImageInput = ({ imageUri, onChangeImage, style, iconSize = 40 }) => {
         mediaTypes: "images",
         quality: 0.5,
         allowsEditing: true,
+        aspect: [4, 3],
       });
       if (!canceled) onChangeImage(assets[0].uri);
     } catch (error) {
@@ -58,6 +58,7 @@ const ImageInput = ({ imageUri, onChangeImage, style, iconSize = 40 }) => {
     </TouchableWithoutFeedback>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.light,

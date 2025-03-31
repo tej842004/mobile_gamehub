@@ -81,7 +81,6 @@ function ListingEditScreen({ navigation }) {
         <FormImagePicker name="image" />
         <AppFormField maxLength={255} name="title" placeholder="Title" />
         <AppFormField
-          maxLength={255}
           multiline
           name="description"
           numberOfLines={3}

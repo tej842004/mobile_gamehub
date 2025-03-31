@@ -25,6 +25,7 @@ import AccountNavigator from "./app/navigation/accountNavigator";
 import FeedNavigator from "./app/navigation/FeedNavigator";
 import AppNavigator from "./app/navigation/appNavigator";
 import * as ImagePicker from "expo-image-picker";
+import { LikesProvider, PostsProvider } from "./app/context/LikesContext";
 
 export default function App() {
   return (
@@ -40,8 +41,10 @@ const AppContent = () => {
   const { user } = useAuth();
 
   return (
-    <NavigationContainer theme={navigationTheme}>
-      {user ? <AppNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
+    <LikesProvider>
+      <NavigationContainer theme={navigationTheme}>
+        {user ? <AppNavigator /> : <AuthNavigator />}
+      </NavigationContainer>
+    </LikesProvider>
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+
 import colors from "../config/colors";
 
 const GameCard = ({ item, onPress }) => {

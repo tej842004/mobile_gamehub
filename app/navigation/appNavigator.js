@@ -22,7 +22,7 @@ const AppNavigator = () => {
           ),
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="ListingEdit"
         component={ListingEditScreen}
         options={({ navigation }) => ({
@@ -40,7 +40,7 @@ const AppNavigator = () => {
             />
           ),
         })}
-      /> */}
+      />
       <Tab.Screen
         name="Account"
         component={AccountNavigator}

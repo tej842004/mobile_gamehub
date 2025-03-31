@@ -3,22 +3,26 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import ListingScreen from "../screen/ListingScreen";
 import ListingDetailsScreen from "../screen/ListingDetailsScreen";
-import Games from "../components/Games";
-import GameDetail from "../components/GameDetail";
+import ProfileScreen from "../screen/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
 const AuthNavigator = () => (
   <Stack.Navigator screenOptions={{ presentation: "modal" }}>
     <Stack.Screen
-      name="Games"
-      component={Games}
+      name="ListingScreen"
+      component={ListingScreen}
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="GameDetail"
-      component={GameDetail}
+      name="ListingDetails"
+      component={ListingDetailsScreen}
       options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Profile"
+      component={ProfileScreen}
+      options={{ headerBackVisible: false }}
     />
   </Stack.Navigator>
 );

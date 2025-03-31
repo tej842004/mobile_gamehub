@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, FlatList, Alert, Text, View } from "react-native";
+import { StyleSheet, FlatList, Alert, View, Text } from "react-native";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { supabase } from "../lib/supabase";
@@ -9,54 +9,60 @@ import Screen from "../components/Screen";
 import Card from "../components/Card";
 import colors from "../config/colors";
 import ActivityIndicator from "../components/ActivityIndicator";
-import AppText from "../components/AppText";
 
-const ListingScreen = ({ navigation }) => {
+const LikesScreen = ({ navigation }) => {
   const { user } = useAuth();
-  const [fetchData, setFetchData] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchPosts = async () => {
+  const fetchLikedPosts = async () => {
     if (!user) return;
     setLoading(true);
 
     const { data, error } = await supabase
-      .from("posts")
+      .from("likes")
       .select(
         `
-        *,
-        likes (
-          id,
-          user_id
-        ),
-        bookmarks (
-          id,
-          user_id
+        post_id,
+        posts (
+          *,
+          likes (
+            id,
+            user_id
+          ),
+          bookmarks (
+            id,
+            user_id
+          )
         )
       `
       )
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
     if (error) {
       Alert.alert("Error", error.message);
     } else {
-      const processedData = data.map((post) => ({
-        ...post,
-        isLiked: post.likes.some((like) => like.user_id === user.id),
-        likeCount: post.likes.length,
-        isBookmarked: post.bookmarks.some(
-          (bookmark) => bookmark.user_id === user.id
-        ),
-        bookmarkCount: post.bookmarks.length,
-      }));
-      setFetchData(processedData);
+      const processedData = data.map((like) => {
+        const post = like.posts;
+        return {
+          ...post,
+          isLiked: true,
+          likeCount: post.likes.length,
+          isBookmarked: post.bookmarks.some(
+            (bookmark) => bookmark.user_id === user.id
+          ),
+          bookmarkCount: post.bookmarks.length,
+        };
+      });
+      setLikedPosts(processedData);
     }
     setLoading(false);
   };
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchPosts();
+      fetchLikedPosts();
     }, [user])
   );
 
@@ -64,13 +70,13 @@ const ListingScreen = ({ navigation }) => {
     <>
       <ActivityIndicator visible={loading} />
       <Screen style={styles.screen}>
-        {fetchData.length === 0 ? (
-          <View style={styles.textContainer}>
-            <AppText style={styles.text}>Nothing to show</AppText>
+        {likedPosts.length === 0 && !loading ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No liked posts yet</Text>
           </View>
         ) : (
           <FlatList
-            data={fetchData}
+            data={likedPosts}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <Card
@@ -79,12 +85,13 @@ const ListingScreen = ({ navigation }) => {
                 imageUrl={item.image_url}
                 isLiked={item.isLiked}
                 likeCount={item.likeCount}
-                onLikedToggle={() => fetchPosts()}
+                onLikedToggle={() => fetchLikedPosts()}
                 isBookmarked={item.isBookmarked}
                 bookmarkCount={item.bookmarkCount}
-                onBookmarkToggle={() => fetchPosts()}
                 postId={item.id}
                 onPress={() => navigation.navigate("ListingDetails", item)}
+                onLikeToggle={fetchLikedPosts}
+                onBookmarkToggle={fetchLikedPosts}
               />
             )}
             showsVerticalScrollIndicator={false}
@@ -96,18 +103,19 @@ const ListingScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  text: {
-    color: colors.medium,
-  },
-  textContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   screen: {
     padding: 10,
     backgroundColor: colors.light,
   },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    color: colors.medium,
+    fontSize: 18,
+  },
 });
 
-export default ListingScreen;
+export default LikesScreen;

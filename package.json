@@ -22,6 +22,7 @@
     "base64-arraybuffer": "^1.0.2",
     "expo": "52.0.41",
     "expo-constants": "17.0.8",
+    "expo-file-system": "18.0.12",
     "expo-image-manipulator": "^13.0.6",
     "expo-image-picker": "~16.0.6",
     "expo-status-bar": "~2.0.1",
@@ -38,9 +39,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "yup": "^1.6.1",
-    "expo-file-system": "18.0.12",
-    "expo-dev-client": "~5.0.15"
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
